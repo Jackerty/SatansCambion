@@ -26,7 +26,7 @@ else
 endif
 
 
-.PHONY: all clean release
+.PHONY: all clean release list_objects update_godot rebase_game show_tree set_git_tree
 
 # All is build everything. No commands needed.
 all: $(GAME_EXE) $(EDITOR_EXE)
@@ -64,6 +64,36 @@ clean:
 	-rm $(GAME_EXE)
 	-rm $(EDITOR_EXE)
 
-# short hand for creating release build
+# Short hand for creating release build
 release:
 	make RELEASE=1
+
+# Short hand for list files in object folder.
+list_objects:
+	ls -R $(O)
+
+# Short hand for updating godot engine (master branch) and 
+# moving game commits up that branch.
+update_godot:
+	git fetch godot master:master
+.ONESHELL:
+rebase_game: update_godot
+	@
+	BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
+	if [[ "$$BRANCH" == "SatansCambion" ]]; then
+	  git rebase master;
+	else
+	  echo "Wrong branch!";
+	fi
+
+#BRANCH=$(git rev-parse --abbrev-ref HEAD)
+#if [[ "$BRANCH" == "SatansCambion" ]]; then
+#		echo 'Aborting script';
+#		git rebase
+#	fi 
+
+# Short hand for showing git commit tree and command to set git tree alias.
+show_tree:
+	git log --all --graph --decorate --oneline
+set_git_tree:
+	git config --global alias.tree "log --all --graph --decorate --oneline"
