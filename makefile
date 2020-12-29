@@ -86,12 +86,6 @@ rebase_game: update_godot
 	  echo "Wrong branch!";
 	fi
 
-#BRANCH=$(git rev-parse --abbrev-ref HEAD)
-#if [[ "$BRANCH" == "SatansCambion" ]]; then
-#		echo 'Aborting script';
-#		git rebase
-#	fi 
-
 # Short hand for showing git commit tree and command to set git tree alias.
 show_tree:
 	git log --all --graph --decorate --oneline
