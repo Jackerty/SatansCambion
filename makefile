@@ -27,6 +27,7 @@ endif
 
 
 .PHONY: all clean release list_objects update_godot rebase_game show_tree set_git_tree
+.ONESHELL: rebase_game
 
 # All is build everything. No commands needed.
 all: $(GAME_EXE) $(EDITOR_EXE)
@@ -76,7 +77,7 @@ list_objects:
 # moving game commits up that branch.
 update_godot:
 	git fetch godot master:master
-.ONESHELL:
+
 rebase_game: update_godot
 	@
 	BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
