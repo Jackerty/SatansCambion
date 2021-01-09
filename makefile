@@ -26,7 +26,7 @@ else
 endif
 
 
-.PHONY: all scons clean release list_objects update_godot rebase_game show_tree set_git_tree
+.PHONY: all scons clean release list_objects update_godot rebase_game create_godot_master show_tree set_git_tree
 .ONESHELL: rebase_game
 
 # All is build everything. No commands needed.
@@ -34,7 +34,7 @@ all: $(GAME_EXE) $(EDITOR_EXE)
 
 # Scons build command.
 scons:
-	scons -j$$(($$(nproc) - 2)) platform=linuxbsd
+	cd engine && scons -j$$(($$(nproc) - 2)) platform=linuxbsd
 
 # Build the game.
 GAME_MODULES:=core/core_constants.o core/core_string_names.o
