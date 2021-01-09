@@ -79,17 +79,27 @@ list_objects:
 
 # Short hand for updating godot engine (master branch) and 
 # moving game commits up that branch.
+# DON'T PULL godot's TAGS!
 update_godot:
-	git fetch godot master:master
+	git fetch --no-tags godot master:godot/master
 
-rebase_game: update_godot
+rebase_game: update/godot
 	@
 	BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 	if [[ "$$BRANCH" == "SatansCambion" ]]; then
-	  git rebase master;
+	  git rebase godot/master;
 	else
 	  echo "Wrong branch!";
 	fi
+
+# Short hand for creating godot remote and master branch.
+# master is used to store latest commit of godot.
+# First git command creates godot remote to look only master of godotengine/godot.
+# Second command creates local branch without remote to track.
+# Third command make first fetch to set tracking.
+create_godot_master:
+	git remote add -t master godot git@github.com:godotengine/godot.git
+	git branch --no-track godot/master CambionStart^
 
 # Short hand for showing git commit tree and command to set git tree alias.
 show_tree:
