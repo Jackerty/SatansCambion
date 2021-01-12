@@ -83,7 +83,7 @@ list_objects:
 update_godot:
 	git fetch --no-tags godot master:godot/master
 
-rebase_game: update/godot
+rebase_game: update_godot
 	@
 	BRANCH=$(shell git rev-parse --abbrev-ref HEAD)
 	if [[ "$$BRANCH" == "SatansCambion" ]]; then
