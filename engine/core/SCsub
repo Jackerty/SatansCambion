@@ -167,10 +167,10 @@ env.CommandNoCache(
 )
 
 # License
-env.Depends("#core/license.gen.h", ["../COPYRIGHT.txt", "../LICENSE.txt"])
+env.Depends("#core/license.gen.h", ["../godot_COPYRIGHT.txt", "../godot_LICENSE.txt"])
 env.CommandNoCache(
     "#core/license.gen.h",
-    ["../COPYRIGHT.txt", "../LICENSE.txt"],
+    ["../godot_COPYRIGHT.txt", "../godot_LICENSE.txt"],
     env.Run(core_builders.make_license_header, "Generating license header."),
 )
 
