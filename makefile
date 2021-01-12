@@ -34,7 +34,7 @@ all: $(GAME_EXE) $(EDITOR_EXE)
 
 # Scons build command.
 scons:
-	cd engine && scons -j$$(($$(nproc) - 2)) platform=linuxbsd
+	cd engine && scons -j$$(($$(nproc) - 2)) platform=linuxbsd builtin_zstd=False builtin_libvorbis=False builtin_libvpx=false builtin_libwebp=false builtin_libtheora=False builtin_zlib=False builtin_libogg=False builtin_libpng=False builtin_freetype=False
 
 # Build the game.
 GAME_MODULES:=core/core_constants.o core/core_string_names.o
