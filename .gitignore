@@ -390,3 +390,11 @@ gcov.css
 # https://clangd.llvm.org/ cache folder
 .clangd/
 .cache/
+
+
+# SATANS CAMBION ADDITIONS!
+*.orig
+*_BACKUP_*
+*_BASE_*
+*_LOCAL_*
+*_REMOTE_*
