@@ -26,7 +26,7 @@ else
 endif
 
 
-.PHONY: all scons scons_builtin_libs scons_clean clean release list_objects gdb update_godot rebase_game create_godot_master show_tree set_git_tree
+.PHONY: all scons scons_builtin_libs scons_clean clean release list_modules list_objects gdb update_godot rebase_game create_godot_master show_tree set_git_tree
 .ONESHELL: rebase_game
 
 # All is build everything. No commands needed.
@@ -34,7 +34,7 @@ all: $(GAME_EXE) $(EDITOR_EXE)
 
 # Scons build command.
 SCONS_FLAGS:=-j$$(($$(nproc) - 2)) platform=linuxbsd
-SCONS_NO_LIBS:=builtin_zstd=False builtin_libvorbis=False builtin_libvpx=false builtin_libwebp=false builtin_libtheora=False builtin_zlib=False builtin_libogg=False builtin_libpng=False builtin_freetype=False
+SCONS_NO_LIBS:= builtin_vulkan=False builtin_zstd=False builtin_libvorbis=False builtin_libvpx=false builtin_libwebp=false builtin_libtheora=False builtin_zlib=False builtin_libogg=False builtin_libpng=False builtin_freetype=False
 scons:
 	cd engine && scons $(SCONS_FLAGS) $(SCONS_NO_LIBS)
 scons_builtin_libs:
@@ -45,7 +45,8 @@ scons_clean_builtin_libs:
 	cd engine && scons --clean $(SCONS_FLAGS)
 
 # Build the game.
-GAME_MODULES:=core/core_constants.o core/core_string_names.o
+GAME_MODULES:=core/core_constants.o \
+              core/core_string_names.o
 $(GAME_EXE): $(addprefix $(O)/,$(GAME_MODULES))
 	$(CXX) $(CPPFLAGS_LINK) $^ -o$@
 
@@ -87,7 +88,14 @@ list_objects:
 
 # Short hand for gdb command.
 gdb:
-	VK_INSTANCE_LAYERS=VK_LAYER_KHRONOS_validation gdb ./engine/bin/godot.linuxbsd.tools.64 -ex "set follow-fork-mode child"
+	gdb -ex "set follow-fork-mode child" -ex "b main(int,char**)" -ex "run" --args ./engine/bin/godot.linuxbsd.tools.64 --vk-layers
+
+# List modules
+list_modules:
+	@echo "GAME MODULES:"
+	@echo $(GAME_MODULES)
+	@echo "EDITOR MODULES:"
+	@echo $(EDITOR_MODULES)
 
 # Short hand for updating godot engine (master branch) and 
 # moving game commits up that branch.
