@@ -8,11 +8,17 @@ GAME_EXE:=satanscambion
 EDITOR_EXE:=satanseditor
 
 # Build flags
-CPPFLAGS:=-c -MMD
-CFLAGS:=-c
+CPPFLAGS:=-c -MMD -Iengine/
+CFLAGS:=-c -MMD -Iengine/
 CPPFLAGS_LINK:=
 CFLAGS_LINK:=
 
+# Platform selection
+PLATFORM?=linux
+ifeq ($(PLATFORM),linux)
+	CFLAGS+=-Iengine/platform/linuxbsd/
+	CPPFLAGS+=-Iengine/platform/linuxbsd/
+endif
 
 # If release is defined then release then different folder is creted.
 ifndef RELEASE
@@ -52,6 +58,7 @@ $(GAME_EXE): $(addprefix $(O)/,$(GAME_MODULES))
 
 # Modules for editor.
 EDITOR_MODULES:=code_editor.o
+                 
 $(EDITOR_EXE): $(addprefix $(O)/,$(EDITOR_MODULES))
 	$(CXX) $(CPPFLAGS_LINK) $^ -o$@
 
@@ -59,10 +66,10 @@ $(EDITOR_EXE): $(addprefix $(O)/,$(EDITOR_MODULES))
 # Include dependency files
 -include $(O)/*.d
 # Folder core
-$(O)/core/%.o: core/%.cpp | $(O)/core
+$(O)/core/%.o: engine/core/%.cpp | $(O)/core
 	$(CXX) $(CPPFLAGS) $^ -o$@
 # Folder editor
-$(O)/editor/%.o: editor/%.cpp | $(O)/editor
+$(O)/editor/%.o: engine/editor/%.cpp | $(O)/editor
 	$(CXX) $(CPPFLAGS) $^ -o$@
 
 # Create object folder core
