@@ -42,8 +42,8 @@
 #define _DEBUG
 #endif
 #endif
-#include "vk_mem_alloc.h"
 
+#include "vk_mem_alloc.h"
 #include <vulkan/vulkan.h>
 
 class VulkanContext;

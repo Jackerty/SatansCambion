@@ -52,7 +52,10 @@ scons_clean_builtin_libs:
 
 # Build the game.
 GAME_MODULES:=core/core_constants.o \
-              core/core_string_names.o
+              core/core_string_names.o \
+              drivers/vulkan/rendering_device_vulkan.o \
+              drivers/vulkan/vk_mem_alloc.o \
+              drivers/vulkan/vulkan_context.o
 $(GAME_EXE): $(addprefix $(O)/,$(GAME_MODULES))
 	$(CXX) $(CPPFLAGS_LINK) $^ -o$@
 
@@ -68,16 +71,24 @@ $(EDITOR_EXE): $(addprefix $(O)/,$(EDITOR_MODULES))
 # Folder core
 $(O)/core/%.o: engine/core/%.cpp | $(O)/core
 	$(CXX) $(CPPFLAGS) $^ -o$@
+$(O)/drivers/vulkan/%.o:engine/drivers/vulkan/%.cpp | $(O)/drivers/vulkan
+	$(CXX) $(CPPFLAGS) $^ -o$@
 # Folder editor
 $(O)/editor/%.o: engine/editor/%.cpp | $(O)/editor
 	$(CXX) $(CPPFLAGS) $^ -o$@
 
+# Create object folder drivers/vulkan
+$(O)/drivers/vulkan/: $(O)/drivers
+	- mkdir -p $@
+# Create drivers
+$(O)/drivers: $(O)
+	- mkdir -p $@
 # Create object folder core
 $(O)/core: $(O)
-	- mkdir -p $(O)/core
+	- mkdir -p $@
 # Create the object directory
 $(O):
-	- mkdir -p $(O)
+	- mkdir -p $@
 
 # Cleans everything
 clean:

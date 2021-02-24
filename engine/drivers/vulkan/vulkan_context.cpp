@@ -35,7 +35,7 @@
 #include "core/string/ustring.h"
 #include "core/version.h"
 
-#include "vk_enum_string_helper.h"
+#include <vulkan/vk_enum_string_helper.h>
 
 #include <stdio.h>
 #include <stdlib.h>
