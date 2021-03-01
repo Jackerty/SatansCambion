@@ -13,6 +13,9 @@ CFLAGS:=-c -MMD -Iengine/
 CPPFLAGS_LINK:=
 CFLAGS_LINK:=
 
+# Libraries
+LIBS:=-lvulkan
+
 # Platform selection
 PLATFORM?=linux
 ifeq ($(PLATFORM),linux)
@@ -50,26 +53,35 @@ scons_clean:
 scons_clean_builtin_libs:
 	cd engine && scons --clean $(SCONS_FLAGS)
 
+# Vulkan related modules.
+VULKAN_MODULES:=drivers/vulkan/rendering_device_vulkan.o \
+                drivers/vulkan/vk_mem_alloc.o \
+                drivers/vulkan/vulkan_context.o
 # Build the game.
-GAME_MODULES:=core/core_constants.o \
-              core/core_string_names.o \
-              drivers/vulkan/rendering_device_vulkan.o \
-              drivers/vulkan/vk_mem_alloc.o \
-              drivers/vulkan/vulkan_context.o
+GAME_MODULES:=$(VULKAN_MODULES) \
+              core/os/mutex.o \
+              core/os/memory.o \
+              core/error/error_macros.o \
+              #core/core_constants.o \
+              #core/core_string_names.o
 $(GAME_EXE): $(addprefix $(O)/,$(GAME_MODULES))
-	$(CXX) $(CPPFLAGS_LINK) $^ -o$@
+	$(CXX) $(CPPFLAGS_LINK) $^ -o$@ $(LIBS)
 
 # Modules for editor.
 EDITOR_MODULES:=code_editor.o
                  
 $(EDITOR_EXE): $(addprefix $(O)/,$(EDITOR_MODULES))
-	$(CXX) $(CPPFLAGS_LINK) $^ -o$@
+	$(CXX) $(CPPFLAGS_LINK) $^ -o$@ $(LIBS)
 
 # Generic object file build commands
 # Include dependency files
 -include $(O)/*.d
 # Folder core
+$(O)/core/os/%.o: engine/core/os/%.cpp | $(O)/core/os
+	$(CXX) $(CPPFLAGS) $^ -o$@
 $(O)/core/%.o: engine/core/%.cpp | $(O)/core
+	$(CXX) $(CPPFLAGS) $^ -o$@
+$(O)/core/error/%.o: engine/core/error/%.cpp | $(O)/core/error
 	$(CXX) $(CPPFLAGS) $^ -o$@
 $(O)/drivers/vulkan/%.o:engine/drivers/vulkan/%.cpp | $(O)/drivers/vulkan
 	$(CXX) $(CPPFLAGS) $^ -o$@
@@ -86,8 +98,11 @@ $(O)/drivers: $(O)
 # Create object folder core
 $(O)/core: $(O)
 	- mkdir -p $@
+# Create object folder core/os
+$(O)/core/os: $(O)/core
+	- mkdir -p $@
 # Create the object directory
-$(O):
+$(O)/core/error: $(O)/core
 	- mkdir -p $@
 
 # Cleans everything
